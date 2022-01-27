@@ -1,4 +1,4 @@
 # imersao-alura-react
 Aprendendo React
 
-![Preject Preview](img/preject-preview-1.png)
+![Preject Preview](img/project-preview-1.png)
