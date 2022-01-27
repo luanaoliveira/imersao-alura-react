@@ -44,8 +44,9 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   //const username = 'omariosouto';
-  const [username,setUsername] = React.useState('omariosouto');
+  const [username, setUsername] = React.useState('omariosouto');
   const roteamento = useRouter();
+  const showImage = username.length > 2
 
   return (
     <>
@@ -77,6 +78,7 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={function (infosDoEvento){
               infosDoEvento.preventDefault();
+              const caracter = user
               console.log('Alguém submeteu o form')
               roteamento.push('/chat');
               //window.location.href = '/chat';
@@ -161,13 +163,13 @@ export default function PaginaInicial() {
               minHeight: '240px',
             }}
           >
-            <Image
+            {showImage && <Image
               styleSheet={{
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
               src={`https://github.com/${username}.png`}
-            />
+            />}
             <Text
               variant="body4"
               styleSheet={{
