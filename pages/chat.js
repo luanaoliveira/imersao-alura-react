@@ -1,27 +1,28 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+// Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQxMzkwNSwiZXhwIjoxOTU4OTg5OTA1fQ._FuoI4G5yK00olFIcuflFwUFom-zSes6zQmf6RmexHg'
+const SUPABASE_URL = 'https://kxqcumxtjtpcagohmhhq.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState('');
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
-  /*
-  //Usuário
-  - Usuário digita no campo textarea
-  - Aperta enter para enviar
-  - Tem que adicionar o texto na listagem
 
-  //Dev
-  - [X] Campo criado
-  - [+/-] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variável)
-  - [ ] Lista de mensagens 
+  React.useEffect(() => {
+    supabaseClient
+      .from('mensagens')
+      .select('*')
+      .order('id', { ascending: false })
+      .then(({ data }) => {
+        console.log('Dados da consulta:', data);
+        setListaDeMensagens(data);
+      });
+  },[]);
 
-  */
-
-  // Sua lógica vai aqui
-
-  // ./Sua lógica vai aqui
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
       id: listaDeMensagens.length + 1,
@@ -29,10 +30,20 @@ export default function ChatPage() {
       texto: novaMensagem,
     };
 
-    setListaDeMensagens([
-      mensagem,
-      ...listaDeMensagens,
-    ]);
+    supabaseClient
+      .from('mensagens')
+      .insert([
+        //Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
+        mensagem
+      ])
+      .them(({ data }) => {
+        console.log('Criando mensagem: ', data);
+        setListaDeMensagens([
+          data[0],
+          ...listaDeMensagens,
+        ]);
+      });
+
     setMensagem('');
   }
 
